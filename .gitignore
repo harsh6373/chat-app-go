@@ -1,0 +1,23 @@
+# Binaries
+chat-app-go
+*.exe
+*.out
+
+# Go vendor
+/vendor/
+
+# Dependency directories
+bin/
+pkg/
+
+# Environment files
+.env
+
+# IDE/editor specific
+.idea/
+.vscode/
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db
