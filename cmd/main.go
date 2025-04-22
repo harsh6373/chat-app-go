@@ -13,6 +13,8 @@ func main() {
 	config.ConnectDB()
 	config.ConnectRedis()
 
+	go ws.SubscribeTypingUpdates()
+
 	app := fiber.New()
 
 	// WebSocket middleware setup

@@ -10,3 +10,9 @@ type Message struct {
 	Content    string
 	Read       bool
 }
+
+type IncomingMessage struct {
+	Text     string `json:"text"`
+	Receiver string `json:"receiver"`
+	Typing   bool   `json:"typing"` // for typing indicator
+}
