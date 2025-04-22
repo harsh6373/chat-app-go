@@ -18,9 +18,10 @@ type Client struct {
 }
 
 type IncomingMessage struct {
-	Text     string `json:"text"`
-	Receiver string `json:"receiver"`
-	Typing   bool   `json:"typing"`
+	Text      string `json:"text"`
+	Receiver  string `json:"receiver"`
+	Typing    bool   `json:"typing"`
+	Broadcast bool   `json:"broadcast"`
 }
 
 var clients = make(map[string]*Client)
@@ -58,7 +59,11 @@ func HandleWebSocket(c *websocket.Conn) {
 		}
 
 		// Send to receiver only
-		sendToClient(msg.Receiver, fmt.Sprintf("From %s: %s", userID, msg.Text))
+		if msg.Broadcast {
+			broadcast(userID, msg.Text)
+		} else {
+			sendToClient(msg.Receiver, fmt.Sprintf("From %s: %s", userID, msg.Text))
+		}
 	}
 
 	mu.Lock()
@@ -92,4 +97,14 @@ func SubscribeTypingUpdates() {
 			}
 		}
 	}()
+}
+
+func broadcast(senderID, msg string) {
+	mu.Lock()
+	defer mu.Unlock()
+	for id, client := range clients {
+		if id != senderID {
+			client.Conn.WriteJSON(fmt.Sprintf("From %s: %s", senderID, msg))
+		}
+	}
 }
